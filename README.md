@@ -44,7 +44,11 @@ const { Webhook } = require("svix");
 app.use(express.urlencoded({ extended: true }))
 
 const PORT = process.env.PORT || 3001
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
+if (!WEBHOOK_SECRET) {
+    throw new Error('Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local')
+}
 
 const connectDb = () => {
     mongoose.connect(process.env.MONGO_URL)
@@ -56,6 +60,7 @@ const connectDb = () => {
 
 
 const main = () => {
+    connectDb();
     app.get("/", (req, res) => {
         res.json({
             "message": "Hello from server!"
